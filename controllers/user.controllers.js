@@ -17,8 +17,14 @@ userController.createUser = async (req, res, next) => {
     if (!info || !allowedRole.includes(info.role))
       throw new AppError(402, "Bad Request", "Create User Error");
     if (info.role === "") info.role = "employee";
-    if (typeof info.name !== "string")
-      info.name = firstLetterCapital(`${info.name}`);
+    const userExist = await User.find({ name: info.name });
+    console.log(userExist);
+    if (!!userExist[0]) {
+      throw new AppError(402, "Bad Request", "Username exist");
+    }
+    if (info)
+      if (typeof info.name !== "string")
+        info.name = firstLetterCapital(`${info.name}`);
     // //mongoose query
     const created = await User.create(info);
     sendResponse(

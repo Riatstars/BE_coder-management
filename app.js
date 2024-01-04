@@ -21,7 +21,6 @@ const mongoose = require("mongoose");
 /* DB connection*/
 const mongoURI = process.env.MONGODB_URI;
 const port = process.env.PORT;
-// const mongoURI = "mongodb://localhost:27017/template";
 
 mongoose
   .connect(mongoURI)
