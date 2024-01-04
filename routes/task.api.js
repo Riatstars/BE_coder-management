@@ -3,7 +3,10 @@ const router = express.Router();
 const {
   createTask,
   getAllTasks,
-  addReference,
+  addAssignee,
+  getTaskById,
+  updateTaskStatusById,
+  deleteTaskById,
 } = require("../controllers/task.controllers.js");
 
 //Read
@@ -13,6 +16,13 @@ const {
  * @access public
  */
 router.get("/", getAllTasks);
+
+/**
+ * @route GET api/boo
+ * @description get list of boos
+ * @access public
+ */
+router.get("/:taskId", getTaskById);
 
 //Create
 /**
@@ -28,7 +38,23 @@ router.post("/", createTask);
  * @description update reference to a boo
  * @access public
  */
-router.put("/targetName", addReference);
+router.put("/assign/:taskId", addAssignee);
+
+//Update
+/**
+ * @route PUT api/boo
+ * @description update reference to a boo
+ * @access public
+ */
+router.put("/:taskId", updateTaskStatusById);
+
+//delete
+/**
+ * @route PUT api/boo
+ * @description delete  a boo
+ * @access public
+ */
+router.delete("/:taskId", deleteTaskById);
 
 //export
 module.exports = router;

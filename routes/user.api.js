@@ -5,6 +5,7 @@ const {
   getAllUsers,
   updateUserById,
   deleteUserById,
+  getTaskByUserId,
 } = require("../controllers/user.controllers.js");
 
 //Read
@@ -14,6 +15,8 @@ const {
  * @access public
  */
 router.get("/", getAllUsers);
+
+router.get("/:userId/tasks", getTaskByUserId);
 
 //Create
 /**
@@ -29,14 +32,14 @@ router.post("/", createUser);
  * @description update a foo
  * @access public
  */
-router.put("/:id", updateUserById);
+// router.put("/:id", updateUserById);
 
-//Delete
-/**
- * @route DELETE api/foo
- * @description delet a foo
- * @access public
- */
-router.delete("/:id", deleteUserById);
+// //Delete
+// /**
+//  * @route DELETE api/foo
+//  * @description delet a foo
+//  * @access public
+//  */
+// router.delete("/:id", deleteUserById);
 
 module.exports = router;

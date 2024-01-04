@@ -74,7 +74,6 @@ userController.getAllUsers = async (req, res, next) => {
         }
       }
     }
-
     // const listOfFound = await User.find(filter);
     const listOfFound = await User.aggregate([
       {
@@ -84,8 +83,6 @@ userController.getAllUsers = async (req, res, next) => {
         },
       },
     ]);
-
-
     sendResponse(
       res,
       200,
@@ -98,43 +95,71 @@ userController.getAllUsers = async (req, res, next) => {
     next(err);
   }
 };
+userController.getTaskByUserId = async (req, res, next) => {
+  //in real project you will getting info from req
+  const { userId } = req.params;
+
+  try {
+    const foundUser = await User.findById(userId);
+    if (!foundUser) {
+      throw new AppError(404, "Bad Request", "User not found");
+    }
+    let foundUserTasks = await Task.find({
+      assignee: userId,
+      status: { $not: { $regex: "deleted" } },
+    }).select("-assignee");
+    foundUser._doc.tasks = foundUserTasks;
+    console.log(foundUser);
+
+    sendResponse(
+      res,
+      200,
+      true,
+      { user: foundUser },
+      null,
+      "Get Tasks success"
+    );
+  } catch (err) {
+    next(err);
+  }
+};
 
 //Update a foo
-userController.updateUserById = async (req, res, next) => {
-  //in real project you will getting id from req. For updating and deleting, it is recommended for you to use unique identifier such as _id to avoid duplication
-  //you will also get updateInfo from req
-  // empty target and info mean update nothing
-  const targetId = null;
-  const updateInfo = "";
+// userController.updateUserById = async (req, res, next) => {
+//   //in real project you will getting id from req. For updating and deleting, it is recommended for you to use unique identifier such as _id to avoid duplication
+//   //you will also get updateInfo from req
+//   // empty target and info mean update nothing
+//   const targetId = null;
+//   const updateInfo = "";
 
-  //options allow you to modify query. e.g new true return lastest update of data
-  const options = { new: true };
-  try {
-    //mongoose query
-    const updated = await User.findByIdAndUpdate(targetId, updateInfo, options);
+//   //options allow you to modify query. e.g new true return lastest update of data
+//   const options = { new: true };
+//   try {
+//     //mongoose query
+//     const updated = await User.findByIdAndUpdate(targetId, updateInfo, options);
 
-    sendResponse(res, 200, true, { data: updated }, null, "Update foo success");
-  } catch (err) {
-    next(err);
-  }
-};
-//Delete foo
-userController.deleteUserById = async (req, res, next) => {
-  //in real project you will getting id from req. For updating and deleting, it is recommended for you to use unique identifier such as _id to avoid duplication
+//     sendResponse(res, 200, true, { data: updated }, null, "Update foo success");
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+// //Delete foo
+// userController.deleteUserById = async (req, res, next) => {
+//   //in real project you will getting id from req. For updating and deleting, it is recommended for you to use unique identifier such as _id to avoid duplication
 
-  // empty target mean delete nothing
-  const targetId = null;
-  //options allow you to modify query. e.g new true return lastest update of data
-  const options = { new: true };
-  try {
-    //mongoose query
-    const updated = await User.findByIdAndDelete(targetId, options);
+//   // empty target mean delete nothing
+//   const targetId = null;
+//   //options allow you to modify query. e.g new true return lastest update of data
+//   const options = { new: true };
+//   try {
+//     //mongoose query
+//     const updated = await User.findByIdAndDelete(targetId, options);
 
-    sendResponse(res, 200, true, { data: updated }, null, "Delete foo success");
-  } catch (err) {
-    next(err);
-  }
-};
+//     sendResponse(res, 200, true, { data: updated }, null, "Delete foo success");
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 
 //export
 module.exports = userController;
