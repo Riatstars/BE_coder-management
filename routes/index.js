@@ -28,10 +28,10 @@ router.get("/template/:test", async (req, res, next) => {
   }
 });
 
-const fooRouter = require("./foo.api.js");
-router.use("/foo", fooRouter);
+const userRouter = require("./user.api.js");
+router.use("/user", userRouter);
 
-const booRouter = require("./boo.api.js");
-router.use("/boo", booRouter);
+const taskRouter = require("./task.api.js");
+router.use("/task", taskRouter);
 
 module.exports = router;

@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const {
-  createFoo,
-  getAllFoos,
-  updateFooById,
-  deleteFooById,
-} = require("../controllers/foo.controllers.js");
+  createUser,
+  getAllUsers,
+  updateUserById,
+  deleteUserById,
+} = require("../controllers/user.controllers.js");
 
 //Read
 /**
@@ -13,7 +13,7 @@ const {
  * @description get list of foos
  * @access public
  */
-router.get("/", getAllFoos);
+router.get("/", getAllUsers);
 
 //Create
 /**
@@ -21,7 +21,7 @@ router.get("/", getAllFoos);
  * @description create a foo
  * @access public
  */
-router.post("/", createFoo);
+router.post("/", createUser);
 
 //Update
 /**
@@ -29,7 +29,7 @@ router.post("/", createFoo);
  * @description update a foo
  * @access public
  */
-router.put("/:id", updateFooById);
+router.put("/:id", updateUserById);
 
 //Delete
 /**
@@ -37,6 +37,6 @@ router.put("/:id", updateFooById);
  * @description delet a foo
  * @access public
  */
-router.delete("/:id", deleteFooById);
+router.delete("/:id", deleteUserById);
 
 module.exports = router;

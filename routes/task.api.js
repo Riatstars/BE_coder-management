@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const {
-  createBoo,
-  getAllBoos,
+  createTask,
+  getAllTasks,
   addReference,
-} = require("../controllers/boo.controllers.js");
+} = require("../controllers/task.controllers.js");
 
 //Read
 /**
@@ -12,7 +12,7 @@ const {
  * @description get list of boos
  * @access public
  */
-router.get("/", getAllBoos);
+router.get("/", getAllTasks);
 
 //Create
 /**
@@ -20,7 +20,7 @@ router.get("/", getAllBoos);
  * @description create a boo
  * @access public
  */
-router.post("/", createBoo);
+router.post("/", createTask);
 
 //Update
 /**

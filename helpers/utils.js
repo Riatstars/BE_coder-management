@@ -19,6 +19,8 @@ class AppError extends Error {
     Error.captureStackTrace(this, this.constructor);
   }
 }
-
+utilsHelper.firstLetterCapital = function (string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
 utilsHelper.AppError = AppError;
 module.exports = utilsHelper;
