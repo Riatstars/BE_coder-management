@@ -44,35 +44,14 @@ userController.getAllUsers = async (req, res, next) => {
   //in real project you will getting condition from from req then construct the filter object for query
   // empty filter mean get all
   let filter = req.query;
-  const allowedQueries = ["name", "role"];
 
-  // function checkQueries() {
-  //   const reqFilter = Object.keys(filter);
-  //   let value = false;
-  //   reqFilter.forEach((item) => {
-  //     if (allowedQueries.includes(item)) {
-  //       value = true;
-  //     } else {
-  //       delete filter[item];
-  //     }
-  //   });
-  //   return value;
-  // }
   try {
     let pipeline = [];
     let listOfFound;
-    console.log(!filter.name && !filter.role);
 
     if (!filter.name && !filter.role) {
       listOfFound = await User.find(filter);
     } else {
-      if (!allowedRole.includes(filter.role)) {
-        throw new AppError(
-          402,
-          "Bad Request",
-          "Please provide the correct role"
-        );
-      }
       pipeline.push({
         $match: {},
       });
@@ -81,9 +60,15 @@ userController.getAllUsers = async (req, res, next) => {
         pipeline[0].$match.name = { $regex: filter.name, $options: "i" };
       }
       if (filter.role) {
+        if (!allowedRole.includes(filter.role)) {
+          throw new AppError(
+            402,
+            "Bad Request",
+            "Please provide the correct role"
+          );
+        }
         pipeline[0].$match.role = filter.role;
       }
-      console.log(pipeline);
       listOfFound = await User.aggregate(pipeline);
     }
 
