@@ -18,7 +18,6 @@ userController.createUser = async (req, res, next) => {
       throw new AppError(402, "Bad Request", "Create User Error");
     if (info.role === "") info.role = "employee";
     const userExist = await User.find({ name: info.name });
-    console.log(userExist);
     if (!!userExist[0]) {
       throw new AppError(402, "Bad Request", "Username exist");
     }
@@ -46,49 +45,48 @@ userController.getAllUsers = async (req, res, next) => {
   // empty filter mean get all
   let filter = req.query;
   const allowedQueries = ["name", "role"];
-  console.log(filter);
 
-  function checkQueries() {
-    const reqFilter = Object.keys(filter);
-    let value = false;
-    reqFilter.forEach((item) => {
-      if (allowedQueries.includes(item)) {
-        value = true;
-      } else {
-        delete filter[item];
-      }
-    });
-    return value;
-  }
-  console.log(!checkQueries());
+  // function checkQueries() {
+  //   const reqFilter = Object.keys(filter);
+  //   let value = false;
+  //   reqFilter.forEach((item) => {
+  //     if (allowedQueries.includes(item)) {
+  //       value = true;
+  //     } else {
+  //       delete filter[item];
+  //     }
+  //   });
+  //   return value;
+  // }
   try {
-    if (!filter || !checkQueries()) {
-      filter = {};
+    let pipeline = [];
+    let listOfFound;
+    console.log(!filter.name && !filter.role);
+
+    if (!filter.name && !filter.role) {
+      listOfFound = await User.find(filter);
     } else {
+      if (!allowedRole.includes(filter.role)) {
+        throw new AppError(
+          402,
+          "Bad Request",
+          "Please provide the correct role"
+        );
+      }
+      pipeline.push({
+        $match: {},
+      });
       if (filter.name) {
         filter.name = firstLetterCapital(filter.name);
-      } else if (filter.role) {
-        if (typeof filter.role === "string") {
-          filter.role = filter.role.toLowerCase();
-        }
-        if (!allowedRole.includes(filter.role)) {
-          throw new AppError(
-            402,
-            "Bad Request",
-            "Please provide the correct role"
-          );
-        }
+        pipeline[0].$match.name = { $regex: filter.name, $options: "i" };
       }
+      if (filter.role) {
+        pipeline[0].$match.role = filter.role;
+      }
+      console.log(pipeline);
+      listOfFound = await User.aggregate(pipeline);
     }
-    // const listOfFound = await User.find(filter);
-    const listOfFound = await User.aggregate([
-      {
-        $match: {
-          name: { $regex: filter.name, $options: "i" },
-          role: filter.role,
-        },
-      },
-    ]);
+
     sendResponse(
       res,
       200,
